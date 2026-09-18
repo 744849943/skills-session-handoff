@@ -1,0 +1,32 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "session-handoff",
+  "version": "1.0.0",
+  "description": "Prepare and recover cross-session work handoffs with evidence-based verification gates.",
+  "author": {
+    "name": "Personal"
+  },
+  "keywords": [
+    "handoff",
+    "recovery",
+    "session continuity",
+    "verification"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Session Handoff",
+    "shortDescription": "Verify work before resuming across conversations.",
+    "longDescription": "Prepare durable handoffs and verify live project state before continuing work in another conversation.",
+    "developerName": "Personal",
+    "category": "Productivity",
+    "capabilities": [
+      "Workflow",
+      "Verification"
+    ],
+    "defaultPrompt": [
+      "Prepare a handoff for this task.",
+      "Recover from the latest handoff and verify the current state.",
+      "Create a recovery verification report before continuing."
+    ]
+  }
+}

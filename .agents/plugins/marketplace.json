@@ -1,0 +1,20 @@
+{
+  "name": "skills-session-handoff",
+  "interface": {
+    "displayName": "Skills Session Handoff"
+  },
+  "plugins": [
+    {
+      "name": "session-handoff",
+      "source": {
+        "source": "local",
+        "path": "./plugins/session-handoff"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
