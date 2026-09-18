@@ -14,7 +14,23 @@ Use read-only inspection on this first pass. If fresh verification would write f
 
 ## Verdict rules
 
-Apply these in order; the first matching rule determines the overall verdict:
+The report has two classification levels:
+
+- **Row-level findings** describe each anchor claim as `MATCH`, `CONFLICT`, or `UNKNOWN`. Mixed findings are expected.
+- **Overall verdict** summarizes the entire recovery pass as exactly one of `MATCH`, `CONFLICT`, or `INSUFFICIENT_EVIDENCE`.
+
+Build the State Comparison rows first, then compute the single overall verdict with this decision rule:
+
+```text
+if any decision-critical row is CONFLICT:
+    overall verdict = CONFLICT
+else if any required evidence is missing, ambiguous, unverifiable, or stale:
+    overall verdict = INSUFFICIENT_EVIDENCE
+else:
+    overall verdict = MATCH
+```
+
+This means a report can discuss matches, conflicts, and evidence gaps while still publishing only one overall verdict. Apply these rules in order:
 
 1. `CONFLICT`: A reliable current asset contradicts any decision-critical anchor claim, or authoritative anchors disagree in a way that changes the next action. One such contradiction makes the overall verdict `CONFLICT`, even when other claims merely lack evidence.
 2. `INSUFFICIENT_EVIDENCE`: No decision-critical claim is contradicted, but required evidence is absent, unverifiable, ambiguous, or stale enough that safe continuation cannot be justified.
@@ -23,6 +39,8 @@ Apply these in order; the first matching rule determines the overall verdict:
 Silence is not agreement. A missing approval is not a human PASS. A passing run for an older revision is not a current machine PASS.
 
 ## Recovery Verification Report contract
+
+Fill every slot in this contract. If evidence for a required slot is unavailable, retain the slot and record `UNKNOWN`, `STALE`, or the evidence limit instead of removing the section.
 
 ```markdown
 # Recovery Verification Report
@@ -57,6 +75,14 @@ Silence is not agreement. A missing approval is not a human PASS. A passing run 
 ## Human Confirmation Gate
 Confirm whether I should proceed with `<proposed action>` under the verified scope above.
 ```
+
+Before sending the report, verify this completed shape:
+
+1. The metadata contains one `Verdict:` line with one overall value.
+2. `State Comparison` contains the row-level findings that support that verdict.
+3. `Verification Gates` contains both the Machine Gate and Human Confirmation Gate.
+4. `Evidence Map`, one `Next Action`, and `Do Not Do` are present.
+5. `Human Confirmation Gate` is the final section, and no continuation work follows it.
 
 ## Example classification
 

@@ -30,6 +30,8 @@ If the request combines both, recover and obtain confirmation before preparing a
 
 The first recover pass is verification, not continuation. Inspect the live state, compare it with the anchor, output a `Recovery Verification Report`, classify it as exactly one of `MATCH`, `CONFLICT`, or `INSUFFICIENT_EVIDENCE`, then **STOP and wait for explicit user confirmation**. This applies even for `MATCH` and even when the user initially says to continue.
 
+The report may contain mixed row-level findings (`MATCH`, `CONFLICT`, and `UNKNOWN`), but those findings feed one overall verdict. Apply the precedence in the recover reference and publish exactly one overall `Verdict` near the top of the report.
+
 Do not execute the proposed next action, repair a conflict, rerun a potentially state-changing check, or manufacture missing evidence before that confirmation. If the user confirms, continue only within the confirmed scope.
 
 ## Persistence

@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "session-handoff",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Prepare and recover cross-session work handoffs with evidence-based verification gates.",
   "author": {
     "name": "Personal"

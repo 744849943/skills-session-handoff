@@ -26,6 +26,10 @@
 | 持久化 | 可写且获准时写入 `.handoff/LATEST.md` 与 `.handoff/history/`；否则降级为 `chat-only` |
 | 最小依赖 | V1 只有 Skill 和 references，不需要 MCP、守护进程、后台监控或 hook |
 
+### V1.0.1 修订
+
+`V1.0.1` 强化了 recover 报告的结构契约：逐项核验可以同时出现 `MATCH`、`CONFLICT` 和 `UNKNOWN`，但整份报告只能发布一个总体 verdict。总体判定固定按 `CONFLICT` → `INSUFFICIENT_EVIDENCE` → `MATCH` 的顺序计算，并在输出前核对双重门禁、Evidence Map、单一 Next Action、Do Not Do 和最终 Human Confirmation Gate 是否齐全。
+
 ### 两种模式
 
 #### `prepare`：离开前建立交接锚点
@@ -160,6 +164,10 @@ The receiving agent reads the live project assets, compares them with the handof
 | Safe stop | The first `recover` pass is read-only, emits a `Recovery Verification Report`, then waits |
 | Persistence | Writes `.handoff/LATEST.md` and `.handoff/history/` when safely permitted, otherwise reports `chat-only` |
 | Minimal V1 | Instruction-only; no MCP server, daemon, watcher, background monitor, or hook |
+
+### V1.0.1 revision
+
+`V1.0.1` strengthens the recover report contract. Row-level findings may mix `MATCH`, `CONFLICT`, and `UNKNOWN`, while the report publishes exactly one overall verdict. The overall result is computed in `CONFLICT` → `INSUFFICIENT_EVIDENCE` → `MATCH` precedence, followed by a structural check for both gates, the Evidence Map, one Next Action, Do Not Do, and the final Human Confirmation Gate.
 
 ### Modes
 
