@@ -1,6 +1,6 @@
 # Session Handoff
 
-> A portable Agent Skill and plugin for safe handoff and recovery across ChatGPT, Codex, and other compatible agent runtimes.
+> A standalone Agent Skill plus a self-contained Web Chat Portable for safe, evidence-based handoff and recovery.
 
 ## 中文
 
@@ -57,16 +57,29 @@
 
 `CONFLICT` 优先于 `INSUFFICIENT_EVIDENCE`：只要当前可靠证据直接反驳任一关键交接结论，总 verdict 就是 `CONFLICT`。没有证据但没有直接反驳时，才是 `INSUFFICIENT_EVIDENCE`。
 
-### 使用方式
+### Web Chat 使用方式
 
-在网页版 ChatGPT 安装插件后：
+普通 Web Chat 使用仓库中的单文件版本：
+
+[`portable/Session-Handoff-WebChat-Portable.md`](portable/Session-Handoff-WebChat-Portable.md)
+
+`prepare`：上传 Portable 文件后说：
 
 ```text
-@session-handoff prepare
-@session-handoff recover
+将此附件作为本次任务的执行规范，而不是普通参考资料。执行 prepare，严格遵守其中的流程和 STOP Gate。
 ```
 
-在 Codex 中：
+`recover`：同时上传 Portable 文件和 handoff 文件后说：
+
+```text
+将 Portable 文件作为执行规范，以 handoff 为交接事实源。执行 recover，先输出 Recovery Verification Report，完成后 STOP，等待确认。
+```
+
+Portable 文件不是“安装 Skill”。它只是把完整流程作为当前 Chat 的执行规范；新 Chat 需要重新上传。
+
+### Desktop Work / Codex 使用方式
+
+在支持 standalone Skill 的环境中安装本仓库对应的 `session-handoff` Skill，然后新建会话：
 
 ```text
 $session-handoff prepare
@@ -80,28 +93,22 @@ $session-handoff recover
 请从 .handoff/LATEST.md 恢复，先核对真实状态，不要直接继续执行。
 ```
 
-### 安装与分发
+### 安装与分发说明
 
-插件目录采用可移植结构：
+当前推荐身份只有三类：GitHub canonical source、本地 standalone Skill、Web Chat Portable Markdown。仓库保留历史 Plugin bundle 源码用于版本追溯，但不要求把两套同名 Plugin 安装长期保持为启用状态。
+
+本地 standalone Skill 结构：
 
 ```text
-plugins/session-handoff/
-├── plugin.json
-├── .codex-plugin/plugin.json
-└── skills/session-handoff/
-    ├── SKILL.md
-    └── references/
-        ├── handoff-template.md
-        └── recovery-template.md
+session-handoff/
+├── SKILL.md
+├── agents/openai.yaml
+└── references/
+    ├── handoff-template.md
+    └── recovery-template.md
 ```
 
-网页版 Chat/Work 不会直接读取某台电脑上的 `~/.codex/skills`。要在工作区使用：
-
-1. 将本仓库导入工作区的插件市场；
-2. 在 ChatGPT 的“插件”目录安装 `Session Handoff`；
-3. 新建聊天后，用 `@session-handoff` 显式调用。
-
-本仓库提供 `.agents/plugins/marketplace.json`，可供工作区管理员导入；本地 Codex 也可以直接从 `plugins/session-handoff` 测试。
+网页版 Chat 不会读取某台电脑上的本地 Skill。需要零安装、单次会话可用时，请上传 Portable Markdown。需要正式组织分发时，再单独评估 Workspace/Public Plugin；不要把本地 Marketplace 安装当作云端发布。
 
 ### 与其他 handoff 类 Skill 的区别
 
@@ -177,23 +184,20 @@ The receiving agent reads the live project assets, compares them with the handof
 
 `CONFLICT` wins over `INSUFFICIENT_EVIDENCE`: one reliable contradiction in a decision-critical claim makes the overall verdict `CONFLICT`. Missing or stale evidence without a direct contradiction is `INSUFFICIENT_EVIDENCE`.
 
-### Usage
+### Web Chat usage
 
-In ChatGPT Chat/Work after installing the plugin:
+Upload [`portable/Session-Handoff-WebChat-Portable.md`](portable/Session-Handoff-WebChat-Portable.md) to an ordinary Web Chat. For `recover`, upload the Portable file together with the handoff file and instruct ChatGPT to emit the verification report and stop. The Portable file is a per-chat execution specification, not an installed Skill.
 
-```text
-@session-handoff prepare
-@session-handoff recover
-```
+### Desktop Work / Codex usage
 
-In Codex:
+Install the standalone `session-handoff` Skill in a supported environment, start a new conversation, then use:
 
 ```text
 $session-handoff prepare
 $session-handoff recover
 ```
 
-Natural-language requests work as well, for example: “Prepare a handoff before I switch conversations” or “Recover from `.handoff/LATEST.md`, verify the live state, and do not continue yet.”
+Natural-language requests work as well, for example: “Prepare a handoff before I switch conversations” or “Recover from `.handoff/LATEST.md`, verify the live state, and do not continue yet.” Automatic selection is model-dependent, so explicit invocation remains the clearest diagnostic when verifying installation.
 
 ### How it differs from similar skills
 
